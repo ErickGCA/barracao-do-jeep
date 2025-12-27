@@ -13,10 +13,22 @@ public class MovimentacaoResponseDTO {
 
     private String id;
     private String itemId;
-    private String tipo;
+    private String tipoMovimentacao;
     private Integer quantidade;
+    private Integer quantidadeAnterior;
+    private Integer quantidadeNova;
     private String responsavel;
     private String observacao;
     private LocalDateTime dataMovimentacao;
     private LocalDateTime createdAt;
+    private ItemInfo item;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ItemInfo {
+        private String id;
+        private String codigo;
+        private String nome;
+    }
 }

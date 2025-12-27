@@ -15,9 +15,17 @@ export const movimentacoesAPI = {
 
   // Registrar entrada
   registrarEntrada: (data) =>
-    api.post('/movimentacoes/entrada', data),
+    api.post(`/itens/${data.itemId}/entrada`, {
+      quantidade: data.quantidade,
+      responsavel: data.responsavel,
+      observacao: data.observacao
+    }),
 
   // Registrar saida
   registrarSaida: (data) =>
-    api.post('/movimentacoes/saida', data)
+    api.post(`/itens/${data.itemId}/saida`, {
+      quantidade: data.quantidade,
+      responsavel: data.responsavel,
+      observacao: data.observacao
+    })
 };
