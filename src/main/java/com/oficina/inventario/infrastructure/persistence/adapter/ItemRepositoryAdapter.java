@@ -35,13 +35,13 @@ public class ItemRepositoryAdapter implements ItemRepository {
 
     @Override
     public Optional<Item> buscarPorId(ItemId id) {
-        return jpaRepository.findById(id.valor())
+        return jpaRepository.findById(id.getValor())
                 .map(ItemMapper::toDomain);
     }
 
     @Override
     public Optional<Item> buscarPorCodigo(CodigoItem codigo) {
-        return jpaRepository.findByCodigo(codigo.valor())
+        return jpaRepository.findByCodigo(codigo.getValor())
                 .map(ItemMapper::toDomain);
     }
 
@@ -55,7 +55,7 @@ public class ItemRepositoryAdapter implements ItemRepository {
 
     @Override
     public List<Item> buscarPorCategoria(CategoriaId categoriaId) {
-        return jpaRepository.findByCategoriaId(categoriaId.valor())
+        return jpaRepository.findByCategoriaId(categoriaId.getValor())
                 .stream()
                 .map(ItemMapper::toDomain)
                 .collect(Collectors.toList());
@@ -79,11 +79,11 @@ public class ItemRepositoryAdapter implements ItemRepository {
 
     @Override
     public boolean existePorCodigo(CodigoItem codigo) {
-        return jpaRepository.existsByCodigo(codigo.valor());
+        return jpaRepository.existsByCodigo(codigo.getValor());
     }
 
     @Override
     public void excluir(ItemId id) {
-        jpaRepository.deleteById(id.valor());
+        jpaRepository.deleteById(id.getValor());
     }
 }

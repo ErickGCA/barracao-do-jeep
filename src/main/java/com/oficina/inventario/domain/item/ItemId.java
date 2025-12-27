@@ -7,20 +7,22 @@ import java.util.UUID;
 
 public final class ItemId extends ValueObject {
 
-    private final Long valor;
+    private final String valor;
 
-    private ItemId(Long valor) {
-        if (valor == null) {
-            throw new IllegalArgumentException("ItemId nao pode ser nulo");
-        }
+    private ItemId(String valor) {
+        validarNaoVazio(valor, "ItemId");
         this.valor = valor;
     }
 
-    public static ItemId of(Long valor) {
+    public static ItemId of(String valor) {
         return new ItemId(valor);
     }
 
-    public Long getValor() {
+    public static ItemId gerar() {
+        return new ItemId(UUID.randomUUID().toString());
+    }
+
+    public String getValor() {
         return valor;
     }
 
@@ -39,6 +41,6 @@ public final class ItemId extends ValueObject {
 
     @Override
     public String toString() {
-        return valor.toString();
+        return valor;
     }
 }

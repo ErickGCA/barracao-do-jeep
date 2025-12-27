@@ -12,11 +12,11 @@ public class MovimentacaoMapper {
 
     public static MovimentacaoJpaEntity toJpaEntity(Movimentacao movimentacao) {
         MovimentacaoJpaEntity jpaEntity = new MovimentacaoJpaEntity();
-        jpaEntity.setId(movimentacao.getId().valor());
-        jpaEntity.setItemId(movimentacao.getItemId().valor());
+        jpaEntity.setId(movimentacao.getId().getValor());
+        jpaEntity.setItemId(movimentacao.getItemId().getValor());
         jpaEntity.setTipo(movimentacao.getTipo().name());
-        jpaEntity.setQuantidade(movimentacao.getQuantidade().valor());
-        jpaEntity.setResponsavel(movimentacao.getResponsavel().valor());
+        jpaEntity.setQuantidade(movimentacao.getQuantidade().getValor());
+        jpaEntity.setResponsavel(movimentacao.getResponsavel().getValor());
         jpaEntity.setObservacao(movimentacao.getObservacao());
         jpaEntity.setDataMovimentacao(movimentacao.getDataMovimentacao());
         jpaEntity.setCreatedAt(movimentacao.getCreatedAt());

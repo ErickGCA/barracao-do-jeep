@@ -36,7 +36,7 @@ public class MovimentacaoRepositoryAdapter implements MovimentacaoRepository {
 
     @Override
     public Optional<Movimentacao> buscarPorId(MovimentacaoId id) {
-        return jpaRepository.findById(id.valor())
+        return jpaRepository.findById(id.getValor())
                 .map(MovimentacaoMapper::toDomain);
     }
 
@@ -50,7 +50,7 @@ public class MovimentacaoRepositoryAdapter implements MovimentacaoRepository {
 
     @Override
     public List<Movimentacao> buscarPorItem(ItemId itemId) {
-        return jpaRepository.findByItemId(itemId.valor())
+        return jpaRepository.findByItemId(itemId.getValor())
                 .stream()
                 .map(MovimentacaoMapper::toDomain)
                 .collect(Collectors.toList());
@@ -75,7 +75,7 @@ public class MovimentacaoRepositoryAdapter implements MovimentacaoRepository {
     @Override
     public List<Movimentacao> buscarPorItemEPeriodo(ItemId itemId, LocalDateTime dataInicio, LocalDateTime dataFim) {
         return jpaRepository.findByItemIdAndDataMovimentacaoBetween(
-                        itemId.valor(),
+                        itemId.getValor(),
                         dataInicio,
                         dataFim
                 )
@@ -86,6 +86,6 @@ public class MovimentacaoRepositoryAdapter implements MovimentacaoRepository {
 
     @Override
     public void excluir(MovimentacaoId id) {
-        jpaRepository.deleteById(id.valor());
+        jpaRepository.deleteById(id.getValor());
     }
 }

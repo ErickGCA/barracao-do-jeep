@@ -12,15 +12,15 @@ public class ItemMapper {
 
     public static ItemJpaEntity toJpaEntity(Item item) {
         ItemJpaEntity jpaEntity = new ItemJpaEntity();
-        jpaEntity.setId(item.getId().valor());
-        jpaEntity.setCodigo(item.getCodigo().valor());
+        jpaEntity.setId(item.getId().getValor());
+        jpaEntity.setCodigo(item.getCodigo().getValor());
         jpaEntity.setNome(item.getNome());
         jpaEntity.setDescricao(item.getDescricao());
         jpaEntity.setUnidadeMedida(item.getUnidadeMedida().name());
-        jpaEntity.setQuantidadeAtual(item.getQuantidadeAtual().valor());
-        jpaEntity.setQuantidadeMinima(item.getQuantidadeMinima().valor());
+        jpaEntity.setQuantidadeAtual(item.getQuantidadeAtual().getValor());
+        jpaEntity.setQuantidadeMinima(item.getQuantidadeMinima().getValor());
         jpaEntity.setLocalizacao(item.getLocalizacao());
-        jpaEntity.setCategoriaId(item.getCategoriaId().valor());
+        jpaEntity.setCategoriaId(item.getCategoriaId().getValor());
         jpaEntity.setAtivo(item.isAtivo());
         jpaEntity.setCreatedAt(item.getCreatedAt());
         jpaEntity.setUpdatedAt(item.getUpdatedAt());

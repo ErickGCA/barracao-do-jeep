@@ -20,15 +20,15 @@ public record ItemOutput(
 ) {
     public static ItemOutput from(Item item) {
         return new ItemOutput(
-                item.getId().valor(),
-                item.getCodigo().valor(),
+                item.getId().getValor(),
+                item.getCodigo().getValor(),
                 item.getNome(),
                 item.getDescricao(),
                 item.getUnidadeMedida().name(),
-                item.getQuantidadeAtual().valor(),
-                item.getQuantidadeMinima().valor(),
+                item.getQuantidadeAtual().getValor(),
+                item.getQuantidadeMinima().getValor(),
                 item.getLocalizacao(),
-                item.getCategoriaId().valor(),
+                item.getCategoriaId().getValor(),
                 item.isAtivo(),
                 item.getCreatedAt(),
                 item.getUpdatedAt()
