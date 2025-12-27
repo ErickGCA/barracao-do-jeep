@@ -1,0 +1,27 @@
+.custom-card {
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.custom-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.custom-card .ant-card-head {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: linear-gradient(to bottom, #fafafa 0%, #ffffff 100%);
+}
+
+.custom-card .ant-card-head-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.88);
+}
+
+.custom-card .ant-card-body {
+  padding: 24px;
+}
