@@ -13,7 +13,6 @@ public class MovimentacaoJpaEntity {
     @Column(name = "item_id", nullable = false)
     private String itemId;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
     private String tipo;
 
