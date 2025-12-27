@@ -10,6 +10,9 @@ import com.oficina.inventario.application.item.usecase.CriarItemUseCase;
 import com.oficina.inventario.application.item.usecase.DesativarItemUseCase;
 import com.oficina.inventario.application.item.usecase.RegistrarEntradaUseCase;
 import com.oficina.inventario.application.item.usecase.RegistrarSaidaUseCase;
+import com.oficina.inventario.domain.categoria.Categoria;
+import com.oficina.inventario.domain.categoria.CategoriaId;
+import com.oficina.inventario.domain.categoria.CategoriaRepository;
 import com.oficina.inventario.presentation.dto.ItemRequestDTO;
 import com.oficina.inventario.presentation.dto.ItemResponseDTO;
 import com.oficina.inventario.presentation.dto.MovimentacaoRequestDTO;
@@ -31,6 +34,7 @@ public class ItemController {
     private final DesativarItemUseCase desativarItemUseCase;
     private final RegistrarEntradaUseCase registrarEntradaUseCase;
     private final RegistrarSaidaUseCase registrarSaidaUseCase;
+    private final CategoriaRepository categoriaRepository;
 
     public ItemController(
             CriarItemUseCase criarItemUseCase,
@@ -38,7 +42,8 @@ public class ItemController {
             BuscarItensUseCase buscarItensUseCase,
             DesativarItemUseCase desativarItemUseCase,
             RegistrarEntradaUseCase registrarEntradaUseCase,
-            RegistrarSaidaUseCase registrarSaidaUseCase
+            RegistrarSaidaUseCase registrarSaidaUseCase,
+            CategoriaRepository categoriaRepository
     ) {
         this.criarItemUseCase = criarItemUseCase;
         this.atualizarItemUseCase = atualizarItemUseCase;
@@ -46,6 +51,7 @@ public class ItemController {
         this.desativarItemUseCase = desativarItemUseCase;
         this.registrarEntradaUseCase = registrarEntradaUseCase;
         this.registrarSaidaUseCase = registrarSaidaUseCase;
+        this.categoriaRepository = categoriaRepository;
     }
 
     @GetMapping
@@ -162,6 +168,17 @@ public class ItemController {
         dto.setAtivo(output.ativo());
         dto.setCreatedAt(output.createdAt());
         dto.setUpdatedAt(output.updatedAt());
+
+        Categoria categoria = categoriaRepository.buscarPorId(CategoriaId.of(output.categoriaId()))
+                .orElse(null);
+
+        if (categoria != null) {
+            ItemResponseDTO.CategoriaInfo categoriaInfo = new ItemResponseDTO.CategoriaInfo();
+            categoriaInfo.setId(categoria.getId().getValor());
+            categoriaInfo.setNome(categoria.getNome().getValor());
+            dto.setCategoria(categoriaInfo);
+        }
+
         return dto;
     }
 }

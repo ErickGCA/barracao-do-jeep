@@ -20,7 +20,16 @@ public class ItemResponseDTO {
     private Integer quantidadeMinima;
     private String localizacao;
     private String categoriaId;
+    private CategoriaInfo categoria;
     private Boolean ativo;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CategoriaInfo {
+        private String id;
+        private String nome;
+    }
 }
