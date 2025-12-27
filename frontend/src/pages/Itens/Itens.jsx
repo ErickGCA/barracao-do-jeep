@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, InputNumber, Select, Space, Popconfirm, message, Tag } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, HistoryOutlined } from '@ant-design/icons';
+import { Table, Modal, Form, Input, InputNumber, Select, Space, Popconfirm, message, Tag, Spin, Row, Col } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, HistoryOutlined, InboxOutlined } from '@ant-design/icons';
 import { itensAPI } from '../../api/itens';
 import { categoriasAPI } from '../../api/categorias';
 import { useNavigate } from 'react-router-dom';
+import Card from '../../components/atoms/Card';
+import Button from '../../components/atoms/Button';
+import useModal from '../../hooks/useModal';
+import './Itens.css';
 
 const Itens = () => {
   const [itens, setItens] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editando, setEditando] = useState(null);
+  const modal = useModal();
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
@@ -41,7 +44,6 @@ const Itens = () => {
   };
 
   const abrirModal = (item = null) => {
-    setEditando(item);
     if (item) {
       form.setFieldsValue({
         ...item,
@@ -50,19 +52,18 @@ const Itens = () => {
     } else {
       form.resetFields();
     }
-    setModalVisible(true);
+    modal.open(item);
   };
 
   const fecharModal = () => {
-    setModalVisible(false);
-    setEditando(null);
     form.resetFields();
+    modal.close();
   };
 
   const salvar = async (values) => {
     try {
-      if (editando) {
-        await itensAPI.atualizar(editando.id, values);
+      if (modal.data) {
+        await itensAPI.atualizar(modal.data.id, values);
         message.success('Item atualizado com sucesso!');
       } else {
         await itensAPI.criar(values);
@@ -87,10 +88,11 @@ const Itens = () => {
 
   const colunas = [
     {
-      title: 'Codigo',
+      title: 'Código',
       dataIndex: 'codigo',
       key: 'codigo',
       width: 120,
+      render: (text) => <strong>{text}</strong>,
     },
     {
       title: 'Nome',
@@ -102,22 +104,24 @@ const Itens = () => {
       dataIndex: ['categoria', 'nome'],
       key: 'categoria',
       width: 150,
+      render: (text) => <Tag color="blue">{text}</Tag>,
     },
     {
       title: 'Qtd Atual',
       dataIndex: 'quantidadeAtual',
       key: 'quantidadeAtual',
-      width: 100,
+      width: 110,
       render: (qtd, record) => {
         const cor = qtd <= record.quantidadeMinima ? 'error' : 'success';
         return <Tag color={cor}>{qtd}</Tag>;
       }
     },
     {
-      title: 'Qtd Min',
+      title: 'Qtd Mín',
       dataIndex: 'quantidadeMinima',
       key: 'quantidadeMinima',
       width: 100,
+      render: (text) => <Tag color="warning">{text}</Tag>,
     },
     {
       title: 'Unidade',
@@ -137,21 +141,22 @@ const Itens = () => {
       ),
     },
     {
-      title: 'Acoes',
+      title: 'Ações',
       key: 'acoes',
-      width: 200,
+      width: 220,
+      fixed: 'right',
       render: (_, record) => (
-        <Space>
+        <Space size="small">
           <Button
-            type="link"
+            variant="link"
             size="small"
             icon={<HistoryOutlined />}
             onClick={() => navigate(`/movimentacoes?itemId=${record.id}`)}
           >
-            Historico
+            Histórico
           </Button>
           <Button
-            type="link"
+            variant="link"
             size="small"
             icon={<EditOutlined />}
             onClick={() => abrirModal(record)}
@@ -163,9 +168,9 @@ const Itens = () => {
               title="Tem certeza que deseja desativar?"
               onConfirm={() => desativar(record.id)}
               okText="Sim"
-              cancelText="Nao"
+              cancelText="Não"
             >
-              <Button type="link" size="small" danger icon={<DeleteOutlined />}>
+              <Button variant="danger" size="small" icon={<DeleteOutlined />}>
                 Desativar
               </Button>
             </Popconfirm>
@@ -175,12 +180,27 @@ const Itens = () => {
     },
   ];
 
+  if (loading && itens.length === 0) {
+    return (
+      <div className="itens-loading">
+        <Spin size="large" tip="Carregando itens..." />
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <h1>Itens</h1>
+    <div className="itens">
+      <div className="itens-header">
+        <div>
+          <h1 className="itens-title">
+            <InboxOutlined /> Itens
+          </h1>
+          <p className="itens-subtitle">
+            Gerencie os itens do inventário
+          </p>
+        </div>
         <Button
-          type="primary"
+          variant="primary"
           icon={<PlusOutlined />}
           onClick={() => abrirModal()}
         >
@@ -188,89 +208,109 @@ const Itens = () => {
         </Button>
       </div>
 
-      <Table
-        dataSource={itens}
-        columns={colunas}
-        rowKey="id"
-        loading={loading}
-        scroll={{ x: 1200 }}
-      />
+      <Card className="itens-card">
+        <Table
+          dataSource={itens}
+          columns={colunas}
+          rowKey="id"
+          loading={loading}
+          scroll={{ x: 1200 }}
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total) => `Total: ${total} itens`,
+          }}
+          locale={{ emptyText: 'Nenhum item cadastrado' }}
+          className="itens-table"
+        />
+      </Card>
 
       <Modal
-        title={editando ? 'Editar Item' : 'Novo Item'}
-        open={modalVisible}
+        title={modal.data ? 'Editar Item' : 'Novo Item'}
+        open={modal.isOpen}
         onCancel={fecharModal}
         footer={null}
-        width={600}
+        width={700}
+        className="itens-modal"
       >
         <Form form={form} layout="vertical" onFinish={salvar}>
-          <Form.Item
-            label="Codigo"
-            name="codigo"
-            rules={[
-              { required: true, message: 'Codigo e obrigatorio' },
-              { min: 3, max: 20, message: 'Entre 3 e 20 caracteres' }
-            ]}
-          >
-            <Input />
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Código"
+                name="codigo"
+                rules={[
+                  { required: true, message: 'Código é obrigatório' },
+                  { min: 3, max: 20, message: 'Entre 3 e 20 caracteres' }
+                ]}
+              >
+                <Input size="large" placeholder="Ex: FERR-001" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Unidade de Medida"
+                name="unidadeMedida"
+                rules={[{ required: true, message: 'Unidade é obrigatória' }]}
+              >
+                <Select size="large" placeholder="Selecione">
+                  <Select.Option value="UN">Unidade (UN)</Select.Option>
+                  <Select.Option value="KG">Quilograma (KG)</Select.Option>
+                  <Select.Option value="L">Litro (L)</Select.Option>
+                  <Select.Option value="M">Metro (M)</Select.Option>
+                  <Select.Option value="PC">Peça (PC)</Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
 
           <Form.Item
             label="Nome"
             name="nome"
             rules={[
-              { required: true, message: 'Nome e obrigatorio' },
+              { required: true, message: 'Nome é obrigatório' },
               { min: 3, max: 100, message: 'Entre 3 e 100 caracteres' }
             ]}
           >
-            <Input />
+            <Input size="large" placeholder="Ex: Chave de Fenda 3/16" />
           </Form.Item>
 
           <Form.Item
-            label="Descricao"
+            label="Descrição"
             name="descricao"
-            rules={[{ max: 500, message: 'Maximo 500 caracteres' }]}
+            rules={[{ max: 500, message: 'Máximo 500 caracteres' }]}
           >
-            <Input.TextArea rows={3} />
+            <Input.TextArea rows={3} size="large" placeholder="Descreva o item..." />
           </Form.Item>
 
-          <Form.Item
-            label="Unidade de Medida"
-            name="unidadeMedida"
-            rules={[{ required: true, message: 'Unidade e obrigatoria' }]}
-          >
-            <Select>
-              <Select.Option value="UN">Unidade (UN)</Select.Option>
-              <Select.Option value="KG">Quilograma (KG)</Select.Option>
-              <Select.Option value="L">Litro (L)</Select.Option>
-              <Select.Option value="M">Metro (M)</Select.Option>
-              <Select.Option value="PC">Peca (PC)</Select.Option>
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            label="Quantidade Minima"
-            name="quantidadeMinima"
-            rules={[{ required: true, message: 'Quantidade minima e obrigatoria' }]}
-            initialValue={0}
-          >
-            <InputNumber min={0} style={{ width: '100%' }} />
-          </Form.Item>
-
-          <Form.Item
-            label="Localizacao"
-            name="localizacao"
-            rules={[{ max: 200, message: 'Maximo 200 caracteres' }]}
-          >
-            <Input placeholder="Ex: Prateleira A3" />
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={8}>
+              <Form.Item
+                label="Quantidade Mínima"
+                name="quantidadeMinima"
+                rules={[{ required: true, message: 'Quantidade mínima é obrigatória' }]}
+                initialValue={0}
+              >
+                <InputNumber min={0} size="large" style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={16}>
+              <Form.Item
+                label="Localização"
+                name="localizacao"
+                rules={[{ max: 200, message: 'Máximo 200 caracteres' }]}
+              >
+                <Input size="large" placeholder="Ex: Prateleira A3" />
+              </Form.Item>
+            </Col>
+          </Row>
 
           <Form.Item
             label="Categoria"
             name="categoriaId"
-            rules={[{ required: true, message: 'Categoria e obrigatoria' }]}
+            rules={[{ required: true, message: 'Categoria é obrigatória' }]}
           >
-            <Select placeholder="Selecione uma categoria">
+            <Select size="large" placeholder="Selecione uma categoria">
               {categorias.map(cat => (
                 <Select.Option key={cat.id} value={cat.id}>
                   {cat.nome}
@@ -279,12 +319,12 @@ const Itens = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item>
-            <Space>
-              <Button type="primary" htmlType="submit">
+          <Form.Item className="form-actions">
+            <Space size="middle">
+              <Button variant="primary" htmlType="submit" size="large">
                 Salvar
               </Button>
-              <Button onClick={fecharModal}>
+              <Button variant="secondary" onClick={fecharModal} size="large">
                 Cancelar
               </Button>
             </Space>

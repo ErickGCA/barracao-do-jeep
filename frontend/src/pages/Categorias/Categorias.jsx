@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, Space, Popconfirm, message, Tag } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Table, Modal, Form, Input, Space, Popconfirm, message, Tag, Spin } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, AppstoreOutlined } from '@ant-design/icons';
 import { categoriasAPI } from '../../api/categorias';
+import Card from '../../components/atoms/Card';
+import Button from '../../components/atoms/Button';
+import useModal from '../../hooks/useModal';
+import './Categorias.css';
 
 const Categorias = () => {
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editando, setEditando] = useState(null);
+  const modal = useModal();
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -27,25 +30,23 @@ const Categorias = () => {
   };
 
   const abrirModal = (categoria = null) => {
-    setEditando(categoria);
     if (categoria) {
       form.setFieldsValue(categoria);
     } else {
       form.resetFields();
     }
-    setModalVisible(true);
+    modal.open(categoria);
   };
 
   const fecharModal = () => {
-    setModalVisible(false);
-    setEditando(null);
     form.resetFields();
+    modal.close();
   };
 
   const salvar = async (values) => {
     try {
-      if (editando) {
-        await categoriasAPI.atualizar(editando.id, values);
+      if (modal.data) {
+        await categoriasAPI.atualizar(modal.data.id, values);
         message.success('Categoria atualizada com sucesso!');
       } else {
         await categoriasAPI.criar(values);
@@ -70,18 +71,13 @@ const Categorias = () => {
 
   const colunas = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 80,
-    },
-    {
       title: 'Nome',
       dataIndex: 'nome',
       key: 'nome',
+      render: (text) => <strong>{text}</strong>,
     },
     {
-      title: 'Descricao',
+      title: 'Descrição',
       dataIndex: 'descricao',
       key: 'descricao',
     },
@@ -89,7 +85,7 @@ const Categorias = () => {
       title: 'Status',
       dataIndex: 'ativo',
       key: 'ativo',
-      width: 100,
+      width: 120,
       render: (ativo) => (
         <Tag color={ativo ? 'success' : 'default'}>
           {ativo ? 'Ativo' : 'Inativo'}
@@ -97,15 +93,16 @@ const Categorias = () => {
       ),
     },
     {
-      title: 'Acoes',
+      title: 'Ações',
       key: 'acoes',
-      width: 150,
+      width: 180,
       render: (_, record) => (
-        <Space>
+        <Space size="small">
           <Button
-            type="link"
+            variant="link"
             icon={<EditOutlined />}
             onClick={() => abrirModal(record)}
+            size="small"
           >
             Editar
           </Button>
@@ -114,9 +111,9 @@ const Categorias = () => {
               title="Tem certeza que deseja desativar?"
               onConfirm={() => desativar(record.id)}
               okText="Sim"
-              cancelText="Nao"
+              cancelText="Não"
             >
-              <Button type="link" danger icon={<DeleteOutlined />}>
+              <Button variant="danger" icon={<DeleteOutlined />} size="small">
                 Desativar
               </Button>
             </Popconfirm>
@@ -126,12 +123,27 @@ const Categorias = () => {
     },
   ];
 
+  if (loading && categorias.length === 0) {
+    return (
+      <div className="categorias-loading">
+        <Spin size="large" tip="Carregando categorias..." />
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <h1>Categorias</h1>
+    <div className="categorias">
+      <div className="categorias-header">
+        <div>
+          <h1 className="categorias-title">
+            <AppstoreOutlined /> Categorias
+          </h1>
+          <p className="categorias-subtitle">
+            Gerencie as categorias de itens do inventário
+          </p>
+        </div>
         <Button
-          type="primary"
+          variant="primary"
           icon={<PlusOutlined />}
           onClick={() => abrirModal()}
         >
@@ -139,18 +151,29 @@ const Categorias = () => {
         </Button>
       </div>
 
-      <Table
-        dataSource={categorias}
-        columns={colunas}
-        rowKey="id"
-        loading={loading}
-      />
+      <Card className="categorias-card">
+        <Table
+          dataSource={categorias}
+          columns={colunas}
+          rowKey="id"
+          loading={loading}
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total) => `Total: ${total} categorias`,
+          }}
+          locale={{ emptyText: 'Nenhuma categoria cadastrada' }}
+          className="categorias-table"
+        />
+      </Card>
 
       <Modal
-        title={editando ? 'Editar Categoria' : 'Nova Categoria'}
-        open={modalVisible}
+        title={modal.data ? 'Editar Categoria' : 'Nova Categoria'}
+        open={modal.isOpen}
         onCancel={fecharModal}
         footer={null}
+        className="categorias-modal"
+        width={600}
       >
         <Form form={form} layout="vertical" onFinish={salvar}>
           <Form.Item
@@ -162,7 +185,7 @@ const Categorias = () => {
               { max: 100, message: 'Maximo 100 caracteres' }
             ]}
           >
-            <Input />
+            <Input size="large" placeholder="Ex: Ferramentas" />
           </Form.Item>
 
           <Form.Item
@@ -172,15 +195,19 @@ const Categorias = () => {
               { max: 500, message: 'Maximo 500 caracteres' }
             ]}
           >
-            <Input.TextArea rows={4} />
+            <Input.TextArea
+              rows={4}
+              placeholder="Descreva a categoria..."
+              size="large"
+            />
           </Form.Item>
 
-          <Form.Item>
-            <Space>
-              <Button type="primary" htmlType="submit">
+          <Form.Item className="form-actions">
+            <Space size="middle">
+              <Button variant="primary" htmlType="submit" size="large">
                 Salvar
               </Button>
-              <Button onClick={fecharModal}>
+              <Button variant="secondary" onClick={fecharModal} size="large">
                 Cancelar
               </Button>
             </Space>
