@@ -34,7 +34,7 @@ public class CategoriaRepositoryAdapter implements CategoriaRepository {
 
     @Override
     public Optional<Categoria> buscarPorId(CategoriaId id) {
-        return jpaRepository.findById(id.valor())
+        return jpaRepository.findById(id.getValor())
                 .map(CategoriaMapper::toDomain);
     }
 
@@ -56,11 +56,11 @@ public class CategoriaRepositoryAdapter implements CategoriaRepository {
 
     @Override
     public boolean existePorNome(NomeCategoria nome) {
-        return jpaRepository.existsByNome(nome.valor());
+        return jpaRepository.existsByNome(nome.getValor());
     }
 
     @Override
     public void excluir(CategoriaId id) {
-        jpaRepository.deleteById(id.valor());
+        jpaRepository.deleteById(id.getValor());
     }
 }

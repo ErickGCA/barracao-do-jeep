@@ -17,11 +17,11 @@ public record MovimentacaoOutput(
 ) {
     public static MovimentacaoOutput from(Movimentacao movimentacao) {
         return new MovimentacaoOutput(
-                movimentacao.getId().valor(),
-                movimentacao.getItemId().valor(),
+                movimentacao.getId().getValor(),
+                movimentacao.getItemId().getValor(),
                 movimentacao.getTipo(),
-                movimentacao.getQuantidade().valor(),
-                movimentacao.getResponsavel().valor(),
+                movimentacao.getQuantidade().getValor(),
+                movimentacao.getResponsavel().getValor(),
                 movimentacao.getObservacao(),
                 movimentacao.getDataMovimentacao(),
                 movimentacao.getCreatedAt()

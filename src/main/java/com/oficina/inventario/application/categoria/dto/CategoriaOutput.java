@@ -14,8 +14,8 @@ public record CategoriaOutput(
 ) {
     public static CategoriaOutput from(Categoria categoria) {
         return new CategoriaOutput(
-                categoria.getId().valor(),
-                categoria.getNome().valor(),
+                categoria.getId().getValor(),
+                categoria.getNome().getValor(),
                 categoria.getDescricao(),
                 categoria.isAtivo(),
                 categoria.getCreatedAt(),

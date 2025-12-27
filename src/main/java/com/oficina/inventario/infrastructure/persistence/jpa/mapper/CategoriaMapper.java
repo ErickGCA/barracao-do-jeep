@@ -9,8 +9,8 @@ public class CategoriaMapper {
 
     public static CategoriaJpaEntity toJpaEntity(Categoria categoria) {
         CategoriaJpaEntity jpaEntity = new CategoriaJpaEntity();
-        jpaEntity.setId(categoria.getId().valor());
-        jpaEntity.setNome(categoria.getNome().valor());
+        jpaEntity.setId(categoria.getId().getValor());
+        jpaEntity.setNome(categoria.getNome().getValor());
         jpaEntity.setDescricao(categoria.getDescricao());
         jpaEntity.setAtivo(categoria.isAtivo());
         jpaEntity.setCreatedAt(categoria.getCreatedAt());

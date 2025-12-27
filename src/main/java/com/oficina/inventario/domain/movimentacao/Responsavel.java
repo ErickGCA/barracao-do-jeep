@@ -18,6 +18,10 @@ public final class Responsavel extends ValueObject {
         return new Responsavel(nome);
     }
 
+    public String getValor() {
+        return nome;
+    }
+
     public String getNome() {
         return nome;
     }

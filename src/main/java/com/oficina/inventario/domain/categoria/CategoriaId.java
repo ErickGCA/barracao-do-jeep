@@ -3,23 +3,26 @@ package com.oficina.inventario.domain.categoria;
 import com.oficina.inventario.domain.shared.ValueObject;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public final class CategoriaId extends ValueObject {
 
-    private final Long valor;
+    private final String valor;
 
-    private CategoriaId(Long valor) {
-        if (valor == null) {
-            throw new IllegalArgumentException("CategoriaId nao pode ser nulo");
-        }
+    private CategoriaId(String valor) {
+        validarNaoVazio(valor, "CategoriaId");
         this.valor = valor;
     }
 
-    public static CategoriaId of(Long valor) {
+    public static CategoriaId of(String valor) {
         return new CategoriaId(valor);
     }
 
-    public Long getValor() {
+    public static CategoriaId gerar() {
+        return new CategoriaId(UUID.randomUUID().toString());
+    }
+
+    public String getValor() {
         return valor;
     }
 
@@ -38,6 +41,6 @@ public final class CategoriaId extends ValueObject {
 
     @Override
     public String toString() {
-        return valor.toString();
+        return valor;
     }
 }
