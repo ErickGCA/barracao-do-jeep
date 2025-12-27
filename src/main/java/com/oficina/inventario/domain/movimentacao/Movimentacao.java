@@ -12,6 +12,8 @@ public class Movimentacao extends AggregateRoot<MovimentacaoId> {
     private ItemId itemId;
     private TipoMovimentacao tipo;
     private Quantidade quantidade;
+    private Quantidade quantidadeAnterior;
+    private Quantidade quantidadeNova;
     private Responsavel responsavel;
     private String observacao;
     private LocalDateTime dataMovimentacao;
@@ -22,6 +24,8 @@ public class Movimentacao extends AggregateRoot<MovimentacaoId> {
     public static Movimentacao registrarEntrada(
             ItemId itemId,
             Quantidade quantidade,
+            Quantidade quantidadeAnterior,
+            Quantidade quantidadeNova,
             Responsavel responsavel,
             String observacao
     ) {
@@ -32,6 +36,8 @@ public class Movimentacao extends AggregateRoot<MovimentacaoId> {
         movimentacao.itemId = itemId;
         movimentacao.tipo = TipoMovimentacao.ENTRADA;
         movimentacao.quantidade = quantidade;
+        movimentacao.quantidadeAnterior = quantidadeAnterior;
+        movimentacao.quantidadeNova = quantidadeNova;
         movimentacao.responsavel = responsavel;
         movimentacao.observacao = observacao;
         movimentacao.dataMovimentacao = LocalDateTime.now();
@@ -43,6 +49,8 @@ public class Movimentacao extends AggregateRoot<MovimentacaoId> {
     public static Movimentacao registrarSaida(
             ItemId itemId,
             Quantidade quantidade,
+            Quantidade quantidadeAnterior,
+            Quantidade quantidadeNova,
             Responsavel responsavel,
             String observacao
     ) {
@@ -53,6 +61,8 @@ public class Movimentacao extends AggregateRoot<MovimentacaoId> {
         movimentacao.itemId = itemId;
         movimentacao.tipo = TipoMovimentacao.SAIDA;
         movimentacao.quantidade = quantidade;
+        movimentacao.quantidadeAnterior = quantidadeAnterior;
+        movimentacao.quantidadeNova = quantidadeNova;
         movimentacao.responsavel = responsavel;
         movimentacao.observacao = observacao;
         movimentacao.dataMovimentacao = LocalDateTime.now();
@@ -92,6 +102,14 @@ public class Movimentacao extends AggregateRoot<MovimentacaoId> {
 
     public Quantidade getQuantidade() {
         return quantidade;
+    }
+
+    public Quantidade getQuantidadeAnterior() {
+        return quantidadeAnterior;
+    }
+
+    public Quantidade getQuantidadeNova() {
+        return quantidadeNova;
     }
 
     public Responsavel getResponsavel() {

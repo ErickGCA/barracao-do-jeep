@@ -43,6 +43,8 @@ public class MovimentacaoController {
         dto.setItemId(output.itemId());
         dto.setTipoMovimentacao(output.tipo().name());
         dto.setQuantidade(output.quantidade());
+        dto.setQuantidadeAnterior(output.quantidadeAnterior());
+        dto.setQuantidadeNova(output.quantidadeNova());
         dto.setResponsavel(output.responsavel());
         dto.setObservacao(output.observacao());
         dto.setDataMovimentacao(output.dataMovimentacao());
@@ -58,9 +60,6 @@ public class MovimentacaoController {
             itemInfo.setNome(item.getNome());
             dto.setItem(itemInfo);
         }
-
-        dto.setQuantidadeAnterior(null);
-        dto.setQuantidadeNova(null);
 
         return dto;
     }

@@ -16,6 +16,8 @@ public class MovimentacaoMapper {
         jpaEntity.setItemId(movimentacao.getItemId().getValor());
         jpaEntity.setTipo(movimentacao.getTipo().name());
         jpaEntity.setQuantidade(movimentacao.getQuantidade().getValor());
+        jpaEntity.setQuantidadeAnterior(movimentacao.getQuantidadeAnterior().getValor());
+        jpaEntity.setQuantidadeNova(movimentacao.getQuantidadeNova().getValor());
         jpaEntity.setResponsavel(movimentacao.getResponsavel().getValor());
         jpaEntity.setObservacao(movimentacao.getObservacao());
         jpaEntity.setDataMovimentacao(movimentacao.getDataMovimentacao());
@@ -30,12 +32,16 @@ public class MovimentacaoMapper {
                 ? Movimentacao.registrarEntrada(
                         ItemId.of(jpaEntity.getItemId()),
                         Quantidade.of(jpaEntity.getQuantidade()),
+                        Quantidade.of(jpaEntity.getQuantidadeAnterior()),
+                        Quantidade.of(jpaEntity.getQuantidadeNova()),
                         Responsavel.of(jpaEntity.getResponsavel()),
                         jpaEntity.getObservacao()
                 )
                 : Movimentacao.registrarSaida(
                         ItemId.of(jpaEntity.getItemId()),
                         Quantidade.of(jpaEntity.getQuantidade()),
+                        Quantidade.of(jpaEntity.getQuantidadeAnterior()),
+                        Quantidade.of(jpaEntity.getQuantidadeNova()),
                         Responsavel.of(jpaEntity.getResponsavel()),
                         jpaEntity.getObservacao()
                 );

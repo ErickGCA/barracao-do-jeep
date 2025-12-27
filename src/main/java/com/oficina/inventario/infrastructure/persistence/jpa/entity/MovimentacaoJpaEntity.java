@@ -19,6 +19,12 @@ public class MovimentacaoJpaEntity {
     @Column(nullable = false)
     private Integer quantidade;
 
+    @Column(name = "quantidade_anterior", nullable = false)
+    private Integer quantidadeAnterior;
+
+    @Column(name = "quantidade_nova", nullable = false)
+    private Integer quantidadeNova;
+
     @Column(nullable = false, length = 200)
     private String responsavel;
 
@@ -63,6 +69,22 @@ public class MovimentacaoJpaEntity {
 
     public void setQuantidade(Integer quantidade) {
         this.quantidade = quantidade;
+    }
+
+    public Integer getQuantidadeAnterior() {
+        return quantidadeAnterior;
+    }
+
+    public void setQuantidadeAnterior(Integer quantidadeAnterior) {
+        this.quantidadeAnterior = quantidadeAnterior;
+    }
+
+    public Integer getQuantidadeNova() {
+        return quantidadeNova;
+    }
+
+    public void setQuantidadeNova(Integer quantidadeNova) {
+        this.quantidadeNova = quantidadeNova;
     }
 
     public String getResponsavel() {

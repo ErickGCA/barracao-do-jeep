@@ -30,12 +30,17 @@ public class RegistrarSaidaUseCase implements UseCase<RegistrarMovimentacaoInput
         Item item = itemRepository.buscarPorId(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("Item nao encontrado"));
 
+        Quantidade quantidadeAnterior = item.getQuantidadeAtual();
         item.registrarSaida(quantidade);
+        Quantidade quantidadeNova = item.getQuantidadeAtual();
+
         Item itemAtualizado = itemRepository.salvar(item);
 
         Movimentacao movimentacao = Movimentacao.registrarSaida(
                 itemId,
                 quantidade,
+                quantidadeAnterior,
+                quantidadeNova,
                 responsavel,
                 input.observacao()
         );

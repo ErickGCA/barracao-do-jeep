@@ -62,6 +62,18 @@ public class ItemController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/estoque-baixo")
+    public ResponseEntity<List<ItemResponseDTO>> listarEstoqueBaixo() {
+        List<ItemOutput> itens = buscarItensUseCase.executar(null);
+
+        List<ItemResponseDTO> response = itens.stream()
+                .filter(item -> item.ativo() && item.quantidadeAtual() <= item.quantidadeMinima())
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping
     public ResponseEntity<ItemResponseDTO> criar(@Valid @RequestBody ItemRequestDTO requestDTO) {
         CriarItemInput input = new CriarItemInput(
