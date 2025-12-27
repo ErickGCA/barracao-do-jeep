@@ -1,0 +1,121 @@
+.itens {
+  padding: 24px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.itens-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.itens-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.itens-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.88);
+  margin: 0 0 8px 0;
+  background: linear-gradient(135deg, #52c41a 0%, #1890ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.itens-subtitle {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.45);
+  margin: 0;
+}
+
+.itens-card {
+  animation: slideIn 0.4s ease-in-out;
+}
+
+.itens-table .ant-table {
+  font-size: 14px;
+}
+
+.itens-table .ant-table-thead > tr > th {
+  background: linear-gradient(to bottom, #fafafa 0%, #f5f5f5 100%);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.itens-table .ant-table-tbody > tr:hover {
+  background: rgba(82, 196, 26, 0.04);
+}
+
+.itens-table .ant-empty-description {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.itens-modal .ant-modal-header {
+  background: linear-gradient(135deg, #52c41a 0%, #1890ff 100%);
+  border-bottom: none;
+}
+
+.itens-modal .ant-modal-title {
+  color: white;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.itens-modal .ant-modal-close {
+  color: white;
+}
+
+.itens-modal .ant-modal-close:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.itens-modal .ant-form-item-label > label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.itens-modal .form-actions {
+  margin-bottom: 0;
+  margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+  .itens {
+    padding: 16px;
+  }
+
+  .itens-title {
+    font-size: 24px;
+  }
+
+  .itens-subtitle {
+    font-size: 14px;
+  }
+
+  .itens-header {
+    flex-direction: column;
+  }
+
+  .itens-modal {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .itens-table .ant-table {
+    font-size: 12px;
+  }
+}

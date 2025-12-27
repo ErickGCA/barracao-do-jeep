@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, InputNumber, Select, Input, Space, message, Tag, Tabs } from 'antd';
-import { PlusOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { Table, Modal, Form, InputNumber, Select, Input, Space, message, Tag, Tabs, Spin } from 'antd';
+import { ArrowUpOutlined, ArrowDownOutlined, SwapOutlined } from '@ant-design/icons';
 import { movimentacoesAPI } from '../../api/movimentacoes';
 import { itensAPI } from '../../api/itens';
+import Card from '../../components/atoms/Card';
+import Button from '../../components/atoms/Button';
+import useModal from '../../hooks/useModal';
 import dayjs from 'dayjs';
+import './Movimentacoes.css';
 
 const Movimentacoes = () => {
   const [movimentacoes, setMovimentacoes] = useState([]);
   const [itens, setItens] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const modal = useModal();
   const [tipoMovimentacao, setTipoMovimentacao] = useState('ENTRADA');
   const [form] = Form.useForm();
 
@@ -42,12 +46,12 @@ const Movimentacoes = () => {
   const abrirModal = (tipo) => {
     setTipoMovimentacao(tipo);
     form.resetFields();
-    setModalVisible(true);
+    modal.open(tipo);
   };
 
   const fecharModal = () => {
-    setModalVisible(false);
     form.resetFields();
+    modal.close();
   };
 
   const salvar = async (values) => {
@@ -72,16 +76,16 @@ const Movimentacoes = () => {
       dataIndex: 'dataMovimentacao',
       key: 'dataMovimentacao',
       width: 180,
-      render: (data) => dayjs(data).format('DD/MM/YYYY HH:mm'),
+      render: (data) => <strong>{dayjs(data).format('DD/MM/YYYY HH:mm')}</strong>,
     },
     {
       title: 'Tipo',
       dataIndex: 'tipoMovimentacao',
       key: 'tipoMovimentacao',
-      width: 100,
+      width: 110,
       render: (tipo) => (
-        <Tag color={tipo === 'ENTRADA' ? 'success' : 'error'}>
-          {tipo === 'ENTRADA' ? 'Entrada' : 'Saida'}
+        <Tag color={tipo === 'ENTRADA' ? 'success' : 'error'} icon={tipo === 'ENTRADA' ? <ArrowUpOutlined /> : <ArrowDownOutlined />}>
+          {tipo === 'ENTRADA' ? 'Entrada' : 'Saída'}
         </Tag>
       ),
     },
@@ -91,37 +95,45 @@ const Movimentacoes = () => {
       key: 'item',
     },
     {
-      title: 'Codigo',
+      title: 'Código',
       dataIndex: ['item', 'codigo'],
       key: 'codigo',
       width: 120,
+      render: (text) => <Tag color="blue">{text}</Tag>,
     },
     {
       title: 'Quantidade',
       dataIndex: 'quantidade',
       key: 'quantidade',
-      width: 100,
+      width: 110,
+      render: (text, record) => (
+        <Tag color={record.tipoMovimentacao === 'ENTRADA' ? 'success' : 'error'}>
+          {record.tipoMovimentacao === 'ENTRADA' ? '+' : '-'}{text}
+        </Tag>
+      ),
     },
     {
       title: 'Qtd Anterior',
       dataIndex: 'quantidadeAnterior',
       key: 'quantidadeAnterior',
       width: 120,
+      render: (text) => <Tag>{text}</Tag>,
     },
     {
       title: 'Qtd Nova',
       dataIndex: 'quantidadeNova',
       key: 'quantidadeNova',
-      width: 100,
+      width: 110,
+      render: (text) => <Tag color="cyan">{text}</Tag>,
     },
     {
-      title: 'Responsavel',
+      title: 'Responsável',
       dataIndex: 'responsavel',
       key: 'responsavel',
       width: 150,
     },
     {
-      title: 'Observacao',
+      title: 'Observação',
       dataIndex: 'observacao',
       key: 'observacao',
     },
@@ -130,7 +142,7 @@ const Movimentacoes = () => {
   const tabItems = [
     {
       key: '1',
-      label: 'Todas as Movimentacoes',
+      label: 'Todas as Movimentações',
       children: (
         <Table
           dataSource={movimentacoes}
@@ -138,7 +150,13 @@ const Movimentacoes = () => {
           rowKey="id"
           loading={loading}
           scroll={{ x: 1400 }}
-          pagination={{ pageSize: 10 }}
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total) => `Total: ${total} movimentações`,
+          }}
+          locale={{ emptyText: 'Nenhuma movimentação registrada' }}
+          className="movimentacoes-table"
         />
       )
     },
@@ -152,13 +170,19 @@ const Movimentacoes = () => {
           rowKey="id"
           loading={loading}
           scroll={{ x: 1400 }}
-          pagination={{ pageSize: 10 }}
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total) => `Total: ${total} entradas`,
+          }}
+          locale={{ emptyText: 'Nenhuma entrada registrada' }}
+          className="movimentacoes-table"
         />
       )
     },
     {
       key: '3',
-      label: 'Apenas Saidas',
+      label: 'Apenas Saídas',
       children: (
         <Table
           dataSource={movimentacoes.filter(m => m.tipoMovimentacao === 'SAIDA')}
@@ -166,52 +190,76 @@ const Movimentacoes = () => {
           rowKey="id"
           loading={loading}
           scroll={{ x: 1400 }}
-          pagination={{ pageSize: 10 }}
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total) => `Total: ${total} saídas`,
+          }}
+          locale={{ emptyText: 'Nenhuma saída registrada' }}
+          className="movimentacoes-table"
         />
       )
     }
   ];
 
+  if (loading && movimentacoes.length === 0) {
+    return (
+      <div className="movimentacoes-loading">
+        <Spin size="large" tip="Carregando movimentações..." />
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <h1>Movimentacoes</h1>
-        <Space>
+    <div className="movimentacoes">
+      <div className="movimentacoes-header">
+        <div>
+          <h1 className="movimentacoes-title">
+            <SwapOutlined /> Movimentações
+          </h1>
+          <p className="movimentacoes-subtitle">
+            Registre e acompanhe entradas e saídas do estoque
+          </p>
+        </div>
+        <Space size="middle">
           <Button
-            type="primary"
+            variant="success"
             icon={<ArrowUpOutlined />}
             onClick={() => abrirModal('ENTRADA')}
-            style={{ backgroundColor: '#52c41a' }}
           >
             Nova Entrada
           </Button>
           <Button
-            type="primary"
-            danger
+            variant="danger"
             icon={<ArrowDownOutlined />}
             onClick={() => abrirModal('SAIDA')}
           >
-            Nova Saida
+            Nova Saída
           </Button>
         </Space>
       </div>
 
-      <Tabs items={tabItems} />
+      <Card className="movimentacoes-card">
+        <Tabs items={tabItems} className="movimentacoes-tabs" />
+      </Card>
 
       <Modal
-        title={tipoMovimentacao === 'ENTRADA' ? 'Registrar Entrada' : 'Registrar Saida'}
-        open={modalVisible}
+        title={tipoMovimentacao === 'ENTRADA' ? 'Registrar Entrada' : 'Registrar Saída'}
+        open={modal.isOpen}
         onCancel={fecharModal}
         footer={null}
+        width={600}
+        className="movimentacoes-modal"
       >
         <Form form={form} layout="vertical" onFinish={salvar}>
           <Form.Item
             label="Item"
             name="itemId"
-            rules={[{ required: true, message: 'Item e obrigatorio' }]}
+            rules={[{ required: true, message: 'Item é obrigatório' }]}
           >
             <Select
               showSearch
+              size="large"
               placeholder="Selecione um item"
               optionFilterProp="children"
               filterOption={(input, option) =>
@@ -230,38 +278,38 @@ const Movimentacoes = () => {
             label="Quantidade"
             name="quantidade"
             rules={[
-              { required: true, message: 'Quantidade e obrigatoria' },
+              { required: true, message: 'Quantidade é obrigatória' },
               { type: 'number', min: 1, message: 'Quantidade deve ser maior que zero' }
             ]}
           >
-            <InputNumber min={1} style={{ width: '100%' }} />
+            <InputNumber min={1} size="large" style={{ width: '100%' }} />
           </Form.Item>
 
           <Form.Item
-            label="Observacao"
-            name="observacao"
-            rules={[{ max: 500, message: 'Maximo 500 caracteres' }]}
-          >
-            <Input.TextArea rows={3} placeholder="Ex: Compra fornecedor XYZ" />
-          </Form.Item>
-
-          <Form.Item
-            label="Responsavel"
+            label="Responsável"
             name="responsavel"
             rules={[
-              { required: true, message: 'Responsavel e obrigatorio' },
+              { required: true, message: 'Responsável é obrigatório' },
               { min: 3, max: 100, message: 'Entre 3 e 100 caracteres' }
             ]}
           >
-            <Input placeholder="Ex: Joao Silva" />
+            <Input size="large" placeholder="Ex: João Silva" />
           </Form.Item>
 
-          <Form.Item>
-            <Space>
-              <Button type="primary" htmlType="submit">
+          <Form.Item
+            label="Observação"
+            name="observacao"
+            rules={[{ max: 500, message: 'Máximo 500 caracteres' }]}
+          >
+            <Input.TextArea rows={3} size="large" placeholder="Ex: Compra fornecedor XYZ" />
+          </Form.Item>
+
+          <Form.Item className="form-actions">
+            <Space size="middle">
+              <Button variant="primary" htmlType="submit" size="large">
                 Registrar
               </Button>
-              <Button onClick={fecharModal}>
+              <Button variant="secondary" onClick={fecharModal} size="large">
                 Cancelar
               </Button>
             </Space>

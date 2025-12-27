@@ -1,0 +1,130 @@
+.movimentacoes {
+  padding: 24px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.movimentacoes-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.movimentacoes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.movimentacoes-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.88);
+  margin: 0 0 8px 0;
+  background: linear-gradient(135deg, #fa8c16 0%, #f5222d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.movimentacoes-subtitle {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.45);
+  margin: 0;
+}
+
+.movimentacoes-card {
+  animation: slideIn 0.4s ease-in-out;
+}
+
+.movimentacoes-tabs .ant-tabs-nav {
+  margin-bottom: 24px;
+}
+
+.movimentacoes-tabs .ant-tabs-tab {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.movimentacoes-table .ant-table {
+  font-size: 14px;
+}
+
+.movimentacoes-table .ant-table-thead > tr > th {
+  background: linear-gradient(to bottom, #fafafa 0%, #f5f5f5 100%);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.movimentacoes-table .ant-table-tbody > tr:hover {
+  background: rgba(250, 140, 22, 0.04);
+}
+
+.movimentacoes-table .ant-empty-description {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.movimentacoes-modal .ant-modal-header {
+  background: linear-gradient(135deg, #fa8c16 0%, #f5222d 100%);
+  border-bottom: none;
+}
+
+.movimentacoes-modal .ant-modal-title {
+  color: white;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.movimentacoes-modal .ant-modal-close {
+  color: white;
+}
+
+.movimentacoes-modal .ant-modal-close:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.movimentacoes-modal .ant-form-item-label > label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.movimentacoes-modal .form-actions {
+  margin-bottom: 0;
+  margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+  .movimentacoes {
+    padding: 16px;
+  }
+
+  .movimentacoes-title {
+    font-size: 24px;
+  }
+
+  .movimentacoes-subtitle {
+    font-size: 14px;
+  }
+
+  .movimentacoes-header {
+    flex-direction: column;
+  }
+
+  .movimentacoes-modal {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .movimentacoes-table .ant-table {
+    font-size: 12px;
+  }
+}
