@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import ptBR from 'antd/locale/pt_BR';
+import { antdTheme } from './styles/theme';
+import './styles/global.css';
 import MainLayout from './components/Layout/MainLayout';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Categorias from './pages/Categorias/Categorias';
@@ -10,7 +12,7 @@ import Movimentacoes from './pages/Movimentacoes/Movimentacoes';
 
 function App() {
   return (
-    <ConfigProvider locale={ptBR}>
+    <ConfigProvider locale={ptBR} theme={antdTheme}>
       <BrowserRouter>
         <MainLayout>
           <Routes>

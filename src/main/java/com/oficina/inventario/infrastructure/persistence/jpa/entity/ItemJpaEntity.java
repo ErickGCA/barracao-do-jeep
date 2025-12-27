@@ -19,7 +19,6 @@ public class ItemJpaEntity {
     @Column(length = 500)
     private String descricao;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "unidade_medida", nullable = false, length = 20)
     private String unidadeMedida;
 

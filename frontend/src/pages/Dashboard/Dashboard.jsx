@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Statistic, Table, Tag, Alert } from 'antd';
+import { Row, Col, Table, Tag, Alert, Spin } from 'antd';
 import {
   AppstoreOutlined,
   InboxOutlined,
   WarningOutlined,
-  ArrowUpOutlined,
-  ArrowDownOutlined
+  SwapOutlined,
 } from '@ant-design/icons';
+import StatCard from '../../components/molecules/StatCard';
+import Card from '../../components/atoms/Card';
 import { categoriasAPI } from '../../api/categorias';
 import { itensAPI } from '../../api/itens';
 import { movimentacoesAPI } from '../../api/movimentacoes';
+import './Dashboard.css';
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -52,9 +54,10 @@ const Dashboard = () => {
 
   const colunas = [
     {
-      title: 'Codigo',
+      title: 'Código',
       dataIndex: 'codigo',
       key: 'codigo',
+      render: (text) => <strong>{text}</strong>
     },
     {
       title: 'Nome',
@@ -68,73 +71,99 @@ const Dashboard = () => {
       render: (qtd) => <Tag color="error">{qtd}</Tag>
     },
     {
-      title: 'Qtd Minima',
+      title: 'Qtd Mínima',
       dataIndex: 'quantidadeMinima',
       key: 'quantidadeMinima',
+      render: (qtd) => <Tag color="warning">{qtd}</Tag>
+    },
+    {
+      title: 'Unidade',
+      dataIndex: 'unidadeMedida',
+      key: 'unidadeMedida',
     },
   ];
 
-  return (
-    <div>
-      <h1>Dashboard</h1>
+  if (loading) {
+    return (
+      <div className="dashboard-loading">
+        <Spin size="large" tip="Carregando dashboard..." />
+      </div>
+    );
+  }
 
-      <Row gutter={16} style={{ marginBottom: 24 }}>
-        <Col span={6}>
-          <Card loading={loading}>
-            <Statistic
-              title="Total de Categorias"
-              value={stats.totalCategorias}
-              prefix={<AppstoreOutlined />}
-            />
-          </Card>
+  return (
+    <div className="dashboard">
+      <div className="dashboard-header">
+        <h1 className="dashboard-title">Dashboard</h1>
+        <p className="dashboard-subtitle">Visão geral do inventário</p>
+      </div>
+
+      <Row gutter={[24, 24]} className="dashboard-stats">
+        <Col xs={24} sm={12} lg={6}>
+          <StatCard
+            title="Total de Categorias"
+            value={stats.totalCategorias}
+            icon={<AppstoreOutlined />}
+            color="primary"
+            loading={loading}
+          />
         </Col>
-        <Col span={6}>
-          <Card loading={loading}>
-            <Statistic
-              title="Total de Itens"
-              value={stats.totalItens}
-              prefix={<InboxOutlined />}
-            />
-          </Card>
+        <Col xs={24} sm={12} lg={6}>
+          <StatCard
+            title="Total de Itens"
+            value={stats.totalItens}
+            icon={<InboxOutlined />}
+            color="success"
+            loading={loading}
+          />
         </Col>
-        <Col span={6}>
-          <Card loading={loading}>
-            <Statistic
-              title="Itens com Estoque Baixo"
-              value={stats.itensEstoqueBaixo}
-              prefix={<WarningOutlined />}
-              valueStyle={{ color: stats.itensEstoqueBaixo > 0 ? '#cf1322' : '#3f8600' }}
-            />
-          </Card>
+        <Col xs={24} sm={12} lg={6}>
+          <StatCard
+            title="Estoque Baixo"
+            value={stats.itensEstoqueBaixo}
+            icon={<WarningOutlined />}
+            color={stats.itensEstoqueBaixo > 0 ? 'warning' : 'success'}
+            loading={loading}
+          />
         </Col>
-        <Col span={6}>
-          <Card loading={loading}>
-            <Statistic
-              title="Movimentacoes Recentes"
-              value={stats.ultimasMovimentacoes.length}
-              prefix={<ArrowUpOutlined />}
-            />
-          </Card>
+        <Col xs={24} sm={12} lg={6}>
+          <StatCard
+            title="Movimentações"
+            value={stats.ultimasMovimentacoes.length}
+            icon={<SwapOutlined />}
+            color="cyan"
+            loading={loading}
+          />
         </Col>
       </Row>
 
       {stats.itensEstoqueBaixo > 0 && (
         <Alert
-          message="Atencao!"
-          description={`Existem ${stats.itensEstoqueBaixo} itens com estoque abaixo do minimo.`}
+          message="Atenção: Itens com estoque baixo!"
+          description={`Existem ${stats.itensEstoqueBaixo} ${stats.itensEstoqueBaixo === 1 ? 'item' : 'itens'} com estoque abaixo do mínimo. Verifique a lista abaixo.`}
           type="warning"
           showIcon
-          style={{ marginBottom: 24 }}
+          closable
+          className="dashboard-alert"
         />
       )}
 
-      <Card title="Itens com Estoque Baixo" loading={loading}>
+      <Card
+        title="Itens com Estoque Baixo"
+        className="dashboard-table-card"
+        hoverable={false}
+      >
         <Table
           dataSource={itensEstoqueBaixo}
           columns={colunas}
           rowKey="id"
-          pagination={false}
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total) => `Total: ${total} itens`,
+          }}
           locale={{ emptyText: 'Nenhum item com estoque baixo' }}
+          className="dashboard-table"
         />
       </Card>
     </div>
