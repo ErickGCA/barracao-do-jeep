@@ -1,0 +1,295 @@
+### Sistema de Inventário - Oficina
+### Exemplos de Requisições HTTP
+
+### ===========================================
+### CATEGORIAS
+### ===========================================
+
+### 1. Listar todas as categorias
+GET http://localhost:8080/api/categorias
+
+### 2. Listar apenas categorias ativas
+GET http://localhost:8080/api/categorias?apenasAtivas=true
+
+### 3. Buscar categoria por ID
+GET http://localhost:8080/api/categorias/1
+
+### 4. Criar nova categoria - Ferramentas
+POST http://localhost:8080/api/categorias
+Content-Type: application/json
+
+{
+  "nome": "Ferramentas",
+  "descricao": "Ferramentas manuais e elétricas"
+}
+
+### 5. Criar nova categoria - Peças
+POST http://localhost:8080/api/categorias
+Content-Type: application/json
+
+{
+  "nome": "Peças",
+  "descricao": "Peças automotivas diversas"
+}
+
+### 6. Criar nova categoria - Consumíveis
+POST http://localhost:8080/api/categorias
+Content-Type: application/json
+
+{
+  "nome": "Consumíveis",
+  "descricao": "Itens de consumo regular"
+}
+
+### 7. Atualizar categoria
+PUT http://localhost:8080/api/categorias/1
+Content-Type: application/json
+
+{
+  "nome": "Ferramentas",
+  "descricao": "Ferramentas manuais, elétricas e pneumáticas"
+}
+
+### 8. Desativar categoria
+DELETE http://localhost:8080/api/categorias/1
+
+
+### ===========================================
+### ITENS
+### ===========================================
+
+### 9. Listar todos os itens
+GET http://localhost:8080/api/itens
+
+### 10. Listar apenas itens ativos
+GET http://localhost:8080/api/itens?apenasAtivos=true
+
+### 11. Buscar item por ID
+GET http://localhost:8080/api/itens/1
+
+### 12. Buscar item por código
+GET http://localhost:8080/api/itens/codigo/PARA-001
+
+### 13. Listar itens por categoria
+GET http://localhost:8080/api/itens/categoria/1
+
+### 14. Listar itens com estoque baixo
+GET http://localhost:8080/api/itens/estoque-baixo
+
+### 15. Criar item - Parafuso
+POST http://localhost:8080/api/itens
+Content-Type: application/json
+
+{
+  "codigo": "PARA-001",
+  "nome": "Parafuso M8x50",
+  "descricao": "Parafuso sextavado M8 comprimento 50mm",
+  "unidadeMedida": "UN",
+  "quantidadeMinima": 100,
+  "localizacao": "Prateleira A3",
+  "categoriaId": 1
+}
+
+### 16. Criar item - Filtro de óleo
+POST http://localhost:8080/api/itens
+Content-Type: application/json
+
+{
+  "codigo": "FILT-001",
+  "nome": "Filtro de Óleo",
+  "descricao": "Filtro de óleo motor universal",
+  "unidadeMedida": "UN",
+  "quantidadeMinima": 20,
+  "localizacao": "Armário B1",
+  "categoriaId": 2
+}
+
+### 17. Criar item - Óleo motor
+POST http://localhost:8080/api/itens
+Content-Type: application/json
+
+{
+  "codigo": "OLEO-001",
+  "nome": "Óleo Motor 5W30",
+  "descricao": "Óleo sintético 5W30 para motor",
+  "unidadeMedida": "L",
+  "quantidadeMinima": 50,
+  "localizacao": "Depósito C",
+  "categoriaId": 3
+}
+
+### 18. Criar item - Chave de fenda
+POST http://localhost:8080/api/itens
+Content-Type: application/json
+
+{
+  "codigo": "FERR-001",
+  "nome": "Chave de Fenda 3/16",
+  "descricao": "Chave de fenda magnética ponta 3/16",
+  "unidadeMedida": "UN",
+  "quantidadeMinima": 5,
+  "localizacao": "Painel de ferramentas",
+  "categoriaId": 1
+}
+
+### 19. Atualizar item
+PUT http://localhost:8080/api/itens/1
+Content-Type: application/json
+
+{
+  "codigo": "PARA-001",
+  "nome": "Parafuso M8x50 Inox",
+  "descricao": "Parafuso sextavado M8 comprimento 50mm em aço inoxidável",
+  "unidadeMedida": "UN",
+  "quantidadeMinima": 150,
+  "localizacao": "Prateleira A3",
+  "categoriaId": 1
+}
+
+### 20. Desativar item
+DELETE http://localhost:8080/api/itens/1
+
+
+### ===========================================
+### MOVIMENTAÇÕES - ENTRADAS
+### ===========================================
+
+### 21. Registrar entrada - Parafusos
+POST http://localhost:8080/api/movimentacoes/entrada
+Content-Type: application/json
+
+{
+  "itemId": 1,
+  "quantidade": 500,
+  "observacao": "Compra fornecedor Parafusos XYZ Ltda",
+  "responsavel": "João Silva"
+}
+
+### 22. Registrar entrada - Filtros de óleo
+POST http://localhost:8080/api/movimentacoes/entrada
+Content-Type: application/json
+
+{
+  "itemId": 2,
+  "quantidade": 50,
+  "observacao": "Reposição estoque mensal",
+  "responsavel": "Maria Santos"
+}
+
+### 23. Registrar entrada - Óleo motor
+POST http://localhost:8080/api/movimentacoes/entrada
+Content-Type: application/json
+
+{
+  "itemId": 3,
+  "quantidade": 200,
+  "observacao": "Compra promoção fornecedor AutoPeças",
+  "responsavel": "Carlos Oliveira"
+}
+
+
+### ===========================================
+### MOVIMENTAÇÕES - SAÍDAS
+### ===========================================
+
+### 24. Registrar saída - Parafusos
+POST http://localhost:8080/api/movimentacoes/saida
+Content-Type: application/json
+
+{
+  "itemId": 1,
+  "quantidade": 50,
+  "observacao": "Usado na OS-123 - Manutenção motor",
+  "responsavel": "Pedro Mecânico"
+}
+
+### 25. Registrar saída - Filtro de óleo
+POST http://localhost:8080/api/movimentacoes/saida
+Content-Type: application/json
+
+{
+  "itemId": 2,
+  "quantidade": 1,
+  "observacao": "Troca de óleo OS-124",
+  "responsavel": "Ana Mecânica"
+}
+
+### 26. Registrar saída - Óleo motor
+POST http://localhost:8080/api/movimentacoes/saida
+Content-Type: application/json
+
+{
+  "itemId": 3,
+  "quantidade": 5,
+  "observacao": "Troca de óleo OS-124",
+  "responsavel": "Ana Mecânica"
+}
+
+### 27. Tentar saída com quantidade insuficiente (deve dar erro)
+POST http://localhost:8080/api/movimentacoes/saida
+Content-Type: application/json
+
+{
+  "itemId": 1,
+  "quantidade": 10000,
+  "observacao": "Teste de validação",
+  "responsavel": "Teste"
+}
+
+
+### ===========================================
+### MOVIMENTAÇÕES - CONSULTAS
+### ===========================================
+
+### 28. Listar todas as movimentações
+GET http://localhost:8080/api/movimentacoes
+
+### 29. Buscar movimentação por ID
+GET http://localhost:8080/api/movimentacoes/1
+
+### 30. Histórico de movimentações de um item
+GET http://localhost:8080/api/movimentacoes/item/1
+
+
+### ===========================================
+### TESTES DE VALIDAÇÃO (devem retornar erro)
+### ===========================================
+
+### 31. Criar categoria sem nome (erro)
+POST http://localhost:8080/api/categorias
+Content-Type: application/json
+
+{
+  "descricao": "Categoria sem nome"
+}
+
+### 32. Criar item sem código (erro)
+POST http://localhost:8080/api/itens
+Content-Type: application/json
+
+{
+  "nome": "Item sem código",
+  "unidadeMedida": "UN",
+  "categoriaId": 1
+}
+
+### 33. Criar item com categoria inexistente (erro)
+POST http://localhost:8080/api/itens
+Content-Type: application/json
+
+{
+  "codigo": "TEST-999",
+  "nome": "Teste",
+  "unidadeMedida": "UN",
+  "categoriaId": 9999
+}
+
+### 34. Movimentação com quantidade zero (erro)
+POST http://localhost:8080/api/movimentacoes/entrada
+Content-Type: application/json
+
+{
+  "itemId": 1,
+  "quantidade": 0,
+  "responsavel": "Teste"
+}
