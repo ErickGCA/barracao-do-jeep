@@ -6,26 +6,33 @@ const Card = ({
   children,
   title,
   extra,
-  bordered = true,
+  bordered,
   hoverable = false,
   loading = false,
   size = 'default',
   className = '',
   headStyle,
   bodyStyle,
+  styles,
   ...props
 }) => {
+  const variant = bordered === false ? 'borderless' : bordered === true ? 'outlined' : undefined;
+
+  const cardStyles = styles || {
+    header: headStyle,
+    body: bodyStyle,
+  };
+
   return (
     <AntCard
       title={title}
       extra={extra}
-      bordered={bordered}
+      variant={variant}
       hoverable={hoverable}
       loading={loading}
       size={size}
       className={`custom-card ${className}`}
-      headStyle={headStyle}
-      bodyStyle={bodyStyle}
+      styles={cardStyles}
       {...props}
     >
       {children}
@@ -44,6 +51,7 @@ Card.propTypes = {
   className: PropTypes.string,
   headStyle: PropTypes.object,
   bodyStyle: PropTypes.object,
+  styles: PropTypes.object,
 };
 
 export default Card;

@@ -7,6 +7,7 @@ import com.oficina.inventario.application.categoria.usecase.DesativarCategoriaUs
 import com.oficina.inventario.application.item.usecase.AtualizarItemUseCase;
 import com.oficina.inventario.application.item.usecase.BuscarItensUseCase;
 import com.oficina.inventario.application.item.usecase.CriarItemUseCase;
+import com.oficina.inventario.application.item.usecase.DesativarItemUseCase;
 import com.oficina.inventario.application.item.usecase.RegistrarEntradaUseCase;
 import com.oficina.inventario.application.item.usecase.RegistrarSaidaUseCase;
 import com.oficina.inventario.application.movimentacao.usecase.BuscarMovimentacoesUseCase;
@@ -52,6 +53,11 @@ public class UseCaseConfig {
     @Bean
     public BuscarItensUseCase buscarItensUseCase(ItemRepository itemRepository) {
         return new BuscarItensUseCase(itemRepository);
+    }
+
+    @Bean
+    public DesativarItemUseCase desativarItemUseCase(ItemRepository itemRepository) {
+        return new DesativarItemUseCase(itemRepository);
     }
 
     @Bean

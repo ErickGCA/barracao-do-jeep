@@ -7,6 +7,7 @@ import com.oficina.inventario.application.item.dto.RegistrarMovimentacaoInput;
 import com.oficina.inventario.application.item.usecase.AtualizarItemUseCase;
 import com.oficina.inventario.application.item.usecase.BuscarItensUseCase;
 import com.oficina.inventario.application.item.usecase.CriarItemUseCase;
+import com.oficina.inventario.application.item.usecase.DesativarItemUseCase;
 import com.oficina.inventario.application.item.usecase.RegistrarEntradaUseCase;
 import com.oficina.inventario.application.item.usecase.RegistrarSaidaUseCase;
 import com.oficina.inventario.presentation.dto.ItemRequestDTO;
@@ -27,6 +28,7 @@ public class ItemController {
     private final CriarItemUseCase criarItemUseCase;
     private final AtualizarItemUseCase atualizarItemUseCase;
     private final BuscarItensUseCase buscarItensUseCase;
+    private final DesativarItemUseCase desativarItemUseCase;
     private final RegistrarEntradaUseCase registrarEntradaUseCase;
     private final RegistrarSaidaUseCase registrarSaidaUseCase;
 
@@ -34,12 +36,14 @@ public class ItemController {
             CriarItemUseCase criarItemUseCase,
             AtualizarItemUseCase atualizarItemUseCase,
             BuscarItensUseCase buscarItensUseCase,
+            DesativarItemUseCase desativarItemUseCase,
             RegistrarEntradaUseCase registrarEntradaUseCase,
             RegistrarSaidaUseCase registrarSaidaUseCase
     ) {
         this.criarItemUseCase = criarItemUseCase;
         this.atualizarItemUseCase = atualizarItemUseCase;
         this.buscarItensUseCase = buscarItensUseCase;
+        this.desativarItemUseCase = desativarItemUseCase;
         this.registrarEntradaUseCase = registrarEntradaUseCase;
         this.registrarSaidaUseCase = registrarSaidaUseCase;
     }
@@ -124,6 +128,12 @@ public class ItemController {
 
         ItemOutput output = registrarSaidaUseCase.executar(input);
         return ResponseEntity.ok(toResponseDTO(output));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> desativar(@PathVariable String id) {
+        desativarItemUseCase.executar(id);
+        return ResponseEntity.noContent().build();
     }
 
     private ItemResponseDTO toResponseDTO(ItemOutput output) {

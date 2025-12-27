@@ -47,7 +47,7 @@ const Itens = () => {
     if (item) {
       form.setFieldsValue({
         ...item,
-        categoriaId: item.categoria.id
+        categoriaId: item.categoria?.id || item.categoriaId
       });
     } else {
       form.resetFields();
